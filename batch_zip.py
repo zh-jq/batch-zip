@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-from zipfile import ZipFile, ZIP_BZIP2
+from zipfile import ZipFile, ZIP_DEFLATED
 import os
 import sys
 import shutil
@@ -28,7 +28,7 @@ def zip_write_file(z_file, f_path):
 def zip_dir(target_dir, d_path):
     d_name = os.path.basename(d_path)
     z_path = "{}/{}.zip".format(target_dir, d_name)
-    with ZipFile(z_path, mode='x', compression=ZIP_BZIP2) as z_file:
+    with ZipFile(z_path, mode='x', compression=ZIP_DEFLATED) as z_file:
         for d in os.listdir(d_path):
             zip_write_file(z_file, os.path.join(d_path, d))
     return z_path
@@ -48,8 +48,10 @@ for d in dirs:
     d_path = os.path.join(target_dir, d)
     if os.path.isdir(d_path):
         if count >= STEP:
-            count = 0
+            count = 1
             batch += 1
+        else:
+            count += 1
         sub_dir = "batch{}".format(batch)
         if not os.path.isdir(sub_dir):
             os.mkdir(sub_dir)
